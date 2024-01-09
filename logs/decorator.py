@@ -20,7 +20,7 @@ def log_it(func):
             args_repr = [repr(a) for a in args]
             kwargs_repr = [f"{k}={v!r}" for k, v in kwargs.items()]
             signature = ", ".join(args_repr + kwargs_repr) or None
-            logging.exception(
+            logging.error(
                 f"Исключение в {func.__name__}({signature}): {str(error)}"
             )
     return wrapper

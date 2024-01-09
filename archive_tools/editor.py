@@ -12,7 +12,6 @@ def get_percentage_scale(number, percent):
     return {number * step // 100: step for step in steps}
 
 
-@log_it
 def edit_name_docx(document):
     name_template = "Пациент:   "
     for paragraph in document.paragraphs:
@@ -26,7 +25,6 @@ def edit_name_docx(document):
     return False
 
 
-@log_it
 def edit_date_docx(document):
     date_template = "Дата рождения:   "
     for paragraph in document.paragraphs:
@@ -40,15 +38,20 @@ def edit_date_docx(document):
     return False
 
 
+@log_it
+def edit_and_save(path):
+    document = Document(path)
+    name_changed = edit_name_docx(document)
+    date_changed = edit_date_docx(document)
+    if name_changed or date_changed:
+        document.save(path)
+
+
 def main():
     paths = list(map(str, Path(ARCHIVE_DIR).glob('*.docx')))
-    status_bar = get_percentage_scale(len(paths), 5)
+    status_bar = get_percentage_scale(len(paths), 10)
     for counter, path in enumerate(paths, 1):
-        document = Document(path)
-        name_changed = edit_name_docx(document)
-        date_changed = edit_date_docx(document)
-        if name_changed or date_changed:
-            document.save(path)
+        edit_and_save(path)
         if counter in status_bar:
             print(f"Отредактировано {status_bar[counter]}% файлов.")
 
