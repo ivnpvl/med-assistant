@@ -1,12 +1,14 @@
 from datetime import date
 
 
-def parse_number(data: str) -> tuple[int, str]:
+def parse_number(data: str, max_digits: int) -> tuple[int, str]:
     number = ""
     record = False
-    for i, char in enumerate(data):
+    for i, char in enumerate(data, 1):
         if char.isdecimal():
             number += char
+            if len(number) == max_digits:
+                break
             record = True
         elif record:
             break
@@ -22,9 +24,11 @@ def normalize_year(year: int, current_year: int) -> int:
 
 
 def normalize_date(data: str) -> date:
-    day, data = parse_number(data)
-    month, data = parse_number(data)
-    year, data = parse_number(data)
+    if not data.replace(" ", ""):
+        raise ValueError("Дата не указана.")
+    day, data = parse_number(data, 2)
+    month, data = parse_number(data, 2)
+    year, data = parse_number(data, 4)
     current_date = date.today()
     year = normalize_year(year, current_date.year)
     normalized_date = date(year=year, month=month, day=day)
