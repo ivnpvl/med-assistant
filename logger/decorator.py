@@ -1,12 +1,12 @@
 import logging
 from functools import wraps
 
-from settings import LOG_FILE
+from config import LOG_DIR
 
 
 logging.basicConfig(
     level=logging.WARNING,
-    filename=LOG_FILE,
+    filename=LOG_DIR / "python.log",
     format="%(levelname)s, %(asctime)s: %(message)s",
 )
 

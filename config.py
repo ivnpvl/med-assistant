@@ -4,9 +4,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent
 
-ARCHIVE_DIR = BASE_DIR / "archive"
+ARCHIVE_DIR = BASE_DIR / "data/archive"
 
-LOG_FILE = BASE_DIR / "logs/python.log"
+CSV_DIR = BASE_DIR / "data/csv"
+
+LOG_DIR = BASE_DIR / "data/journal"
 
 
 class Settings(BaseSettings):

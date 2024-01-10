@@ -4,6 +4,7 @@ from sqlalchemy.orm import session, sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from settings import settings
+from models import metadata
 
 
 engine = create_async_engine(
@@ -16,8 +17,8 @@ engine = create_async_engine(
 
 async def main():
     async with engine.connect() as conn:
-        res = await conn.execute(text("SELECT VERSION()"))
-        print(f"{res.all()=}")
+        await conn.run_sync(metadata.drop_all)
+        await conn.run_sync(metadata.create_all)
 
 
 asyncio.run(main())
