@@ -1,8 +1,5 @@
-# Archive
-archive/
-
-# Logs
-*.log
+# Data
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

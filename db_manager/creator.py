@@ -3,7 +3,7 @@ from sqlalchemy import text, make_url
 from sqlalchemy.orm import session, sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from settings import settings
+from config import settings
 from models import metadata
 
 
@@ -21,4 +21,5 @@ async def main():
         await conn.run_sync(metadata.create_all)
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

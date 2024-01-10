@@ -6,9 +6,15 @@ BASE_DIR = Path(__file__).resolve().parent
 
 ARCHIVE_DIR = BASE_DIR / "data/archive"
 
-CSV_DIR = BASE_DIR / "data/csv"
+JSON_DIR = BASE_DIR / "data/json"
 
 LOG_DIR = BASE_DIR / "data/journal"
+
+STARTWITH_TEMPLATES = {
+    "date": "Дата:   ",
+    "name": "Пациент:   ",
+    "birthdate": "Дата рождения:   ",
+}
 
 
 class Settings(BaseSettings):
