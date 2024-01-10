@@ -10,10 +10,16 @@ JSON_DIR = BASE_DIR / "data/json"
 
 LOG_DIR = BASE_DIR / "data/journal"
 
-STARTWITH_TEMPLATES = {
+STARTWITH_TEMPLATES_DOCX = {
     "date": "Дата:   ",
     "name": "Пациент:   ",
     "birthdate": "Дата рождения:   ",
+}
+
+STARTWITH_TEMPLATES_ODT = {
+    "date": "Дата:",
+    "name": "Пациент:",
+    "birthdate": "Дата рождения:",
 }
 
 
