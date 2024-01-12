@@ -1,2 +1,2 @@
-from date import normalize_date
-from name import normalize_name
+from normalizer.date import normalize_date
+from normalizer.name import normalize_name

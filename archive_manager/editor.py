@@ -1,53 +1,39 @@
-from docx import Document
 from pathlib import Path
 
-from config import ARCHIVE_DIR, STARTWITH_TEMPLATES
+from config import ARCHIVE_DIR
 from logger.decorator import log_it
 from normalizer import normalize_date, normalize_name
-from util import PercentageScale
-
-
-def edit_name_docx(document):
-    name_template = STARTWITH_TEMPLATES["name"]
-    for paragraph in document.paragraphs:
-        if name_template in paragraph.text:
-            name = paragraph.text.split(name_template)[1].split("\n")[0]
-            normalized_name = normalize_name(name)
-            if name != normalized_name:
-                paragraph.text = paragraph.text.replace(name, normalized_name)
-                return True
-            return False
-    return False
-
-
-def edit_birthdate_docx(document):
-    date_template = STARTWITH_TEMPLATES["birthdate"]
-    for paragraph in document.paragraphs:
-        if date_template in paragraph.text:
-            date = paragraph.text.split(date_template)[1].split("\n")[0]
-            normalized_date = normalize_date(date).strftime("%d.%m.%Y")
-            if date != normalized_date:
-                paragraph.text = paragraph.text.replace(date, normalized_date)
-                return True
-            return False
-    return False
+from util import File, PercentageScale
 
 
 @log_it
-def edit_and_save(path):
-    document = Document(path)
-    name_changed = edit_name_docx(document)
-    birthdate_changed = edit_birthdate_docx(document)
-    if name_changed or birthdate_changed:
-        document.save(path)
+def edit_name_birthdate_docx(path: Path) -> None:
+    attrs = ("name", "birthdate")
+    document = File(path)
+    is_changed = False
+    for attr in attrs:
+        template = document.startwith_templates.get(attr)
+        for paragraph in document.paragraphs:
+            text = paragraph.text
+            if template in text:
+                parsed = text.split(template)[1].split("\n")[0].strip()
+                if attr == "name":
+                    normalized = normalize_name(parsed)
+                elif attr == "birthdate":
+                    normalized = normalize_date(parsed).strftime("%d.%m.%Y")
+                if parsed != normalized:
+                    paragraph.text = text.replace(parsed, normalized)
+                    is_changed = True
+                    break
+    if is_changed:
+        document.save()
 
 
 def main():
-    paths = list(map(str, Path(ARCHIVE_DIR).glob('*.docx')))
-    status_bar = PercentageScale(len(paths), 10)
-    for counter, path in enumerate(paths, 1):
-        edit_and_save(path)
-        status_bar.display(counter)
+    paths = list(Path(ARCHIVE_DIR).glob('*.docx'))
+    status_bar = PercentageScale(len(paths), 5)
+    print(str(paths[200]))
+    edit_name_birthdate_docx(paths[200])
 
 
 if __name__ == "__main__":

@@ -39,6 +39,12 @@ class File:
         if self.suffix == ".odt":
             return teletype.extractText(paragraph)
 
+    def save(self):
+        if self.suffix == ".docx":
+            self.document.save(self.path)
+        if self.suffix == ".odt":
+            raise NotImplementedError("Файл .odt не поддерживает изменение.")
+
 
 class PercentageScale:
 
