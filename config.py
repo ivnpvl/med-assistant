@@ -6,6 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent
 
 ARCHIVE_DIR = BASE_DIR / "data/archive"
 
+CARD_DIR = BASE_DIR / "data/card"
+
 JSON_DIR = BASE_DIR / "data/json"
 
 LOG_DIR = BASE_DIR / "data/journal"

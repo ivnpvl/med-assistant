@@ -3,7 +3,7 @@ from pathlib import Path
 
 from config import ARCHIVE_DIR, JSON_DIR, CONSULTATION_ATTRS
 from logger.decorator import log_it
-from util import File, PercentageScale
+from util import File, PercentageScale, parse_by_startwith
 
 
 @log_it
@@ -14,7 +14,7 @@ def parse_consultation(path: Path) -> dict:
         for paragraph in document.paragraphs:
             text = document.get_text(paragraph)
             if template in text:
-                parsed = text.split(template)[1].split("\n")[0].strip()
+                parsed = parse_by_startwith(text, template)
                 if attr == "name":
                     data["surname"], data["name"], data["patronymic"] = \
                         parsed.split()

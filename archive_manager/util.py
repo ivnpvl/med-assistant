@@ -6,6 +6,10 @@ from pathlib import Path
 from config import STARTWITH_TEMPLATES_DOCX, STARTWITH_TEMPLATES_ODT
 
 
+def parse_by_startwith(data: str, template: str) -> str:
+    return data.split(template)[1].split("\n")[0].strip()
+
+
 class File:
 
     def __init__(self, path: Path):
