@@ -22,6 +22,15 @@ STARTWITH_TEMPLATES_ODT = {
     "birthdate": "Дата рождения:",
 }
 
+CONSULTATION_ATTRS = (
+    "date",
+    "surname",
+    "name",
+    "patronymic",
+    "birthdate",
+    "path",
+)
+
 
 class Settings(BaseSettings):
     DB_HOST: str
