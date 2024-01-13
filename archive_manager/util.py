@@ -3,7 +3,11 @@ from odf import text, teletype
 from odf.opendocument import load
 from pathlib import Path
 
-from .templates import STARTWITH_TEMPLATES_DOCX, STARTWITH_TEMPLATES_ODT
+from config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
+from templates import (
+    CARD_STARTWITH_TEMPLATES,
+    CONSULTATION_STARTWITH_TEMPLATES,
+)
 
 
 class File:
@@ -11,15 +15,8 @@ class File:
     def __init__(self, path: Path):
         self.path = path
         self.suffix = self.path.suffix
-        self.startwith_templates = self._get_startwith_templates()
         self.document = self._get_document()
         self.paragraphs = self._get_paragraphs()
-
-    def _get_startwith_templates(self):
-        if self.suffix == ".docx":
-            return STARTWITH_TEMPLATES_DOCX
-        if self.suffix == ".odt":
-            return STARTWITH_TEMPLATES_ODT
 
     def _get_document(self):
         if self.suffix == ".docx":
@@ -56,9 +53,23 @@ class File:
             raise NotImplementedError("Файл .odt не поддерживает изменение.")
 
 
+class Card(File):
+
+    WORK_DIR = CARD_DIR
+    JSON_PATH = JSON_DIR / "cards.json"
+    STARTWITH_TEMPLATES = CARD_STARTWITH_TEMPLATES
+
+
+class Consultation(File):
+
+    WORK_DIR = ARCHIVE_DIR
+    JSON_PATH = JSON_DIR / "consultations.json"
+    STARTWITH_TEMPLATES = CONSULTATION_STARTWITH_TEMPLATES
+
+
 class PercentageScale:
 
-    def __init__(self, number: int, percent: int):
+    def __init__(self, number: int, percent: int = 5):
         self.number = number
         self.percent = percent
         self.scale = self._get_percentage_scale()

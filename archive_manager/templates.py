@@ -1,22 +1,16 @@
-STARTWITH_TEMPLATES_DOCX = {
-    "date": "Дата:   ",
-    "name": "Пациент:   ",
-    "birthdate": "Дата рождения:   ",
-}
-
-STARTWITH_TEMPLATES_ODT = {
+CONSULTATION_STARTWITH_TEMPLATES = {
     "date": "Дата:",
     "name": "Пациент:",
     "birthdate": "Дата рождения:",
 }
 
-CARD_FILE_TEMPLATES = ("*карта*", "*карточка*")
+CARD_STARTWITH_TEMPLATES = {
+    "number": "АМБУЛАТОРНЫХ УСЛОВИЯХ №",
+    "name": "Фамилия, имя, отчество:",
+    "gender": "Пол:",
+    "birthdate": "Дата рождения:",
+    "address": "Место регистрации:",
+    "phone": "тел.:",
+}
 
-CONSULTATION_ATTRS = (
-    "date",
-    "surname",
-    "name",
-    "patronymic",
-    "birthdate",
-    "path",
-)
+CARD_FILE_TEMPLATES = ("*карта*", "*карточка*")

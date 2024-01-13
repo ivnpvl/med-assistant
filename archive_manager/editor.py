@@ -3,9 +3,9 @@ from pathlib import Path
 from config import ARCHIVE_DIR, CARD_DIR
 from logger.decorator import log_it
 from normalizer import normalize_date, normalize_name
-from .exceptions import AttrNotExistsError
-from .templates import CARD_FILE_TEMPLATES
-from .util import File, PercentageScale
+from exceptions import AttrNotExistsError
+from templates import CARD_FILE_TEMPLATES
+from util import Card, Consultation, PercentageScale
 
 
 @log_it
