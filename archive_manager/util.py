@@ -3,11 +3,7 @@ from odf import text, teletype
 from odf.opendocument import load
 from pathlib import Path
 
-from config import STARTWITH_TEMPLATES_DOCX, STARTWITH_TEMPLATES_ODT
-
-
-def parse_by_startwith(data: str, template: str) -> str:
-    return data.split(template)[1].split("\n")[0].strip()
+from .templates import STARTWITH_TEMPLATES_DOCX, STARTWITH_TEMPLATES_ODT
 
 
 class File:
@@ -42,6 +38,16 @@ class File:
             return paragraph.text
         if self.suffix == ".odt":
             return teletype.extractText(paragraph)
+
+    def parse_startwith(self, template: str, edit=False):
+        for paragraph in self.paragraphs:
+            text = self.get_text(paragraph)
+            if template in text:
+                parsed = text.split(template)[1].split("\n")[0].strip()
+                if edit:
+                    return parsed, paragraph
+                else:
+                    return parsed
 
     def save(self):
         if self.suffix == ".docx":

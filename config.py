@@ -12,27 +12,6 @@ JSON_DIR = BASE_DIR / "data/json"
 
 LOG_DIR = BASE_DIR / "data/journal"
 
-STARTWITH_TEMPLATES_DOCX = {
-    "date": "Дата:   ",
-    "name": "Пациент:   ",
-    "birthdate": "Дата рождения:   ",
-}
-
-STARTWITH_TEMPLATES_ODT = {
-    "date": "Дата:",
-    "name": "Пациент:",
-    "birthdate": "Дата рождения:",
-}
-
-CONSULTATION_ATTRS = (
-    "date",
-    "surname",
-    "name",
-    "patronymic",
-    "birthdate",
-    "path",
-)
-
 
 class Settings(BaseSettings):
     DB_HOST: str
