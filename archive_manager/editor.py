@@ -1,46 +1,37 @@
 from pathlib import Path
 
-from config import ARCHIVE_DIR, CARD_DIR
 from logger.decorator import log_it
-from normalizer import normalize_date, normalize_name
-from exceptions import AttrNotExistsError
-from templates import CARD_FILE_TEMPLATES
+from exceptions import AttrNotExistsError, AttrNotExistsInFileError
 from util import Card, Consultation, PercentageScale
 
 
 @log_it
 def replace_cards_from_archive() -> None:
-    card_templates = CARD_FILE_TEMPLATES
-    startwith_template = "АМБУЛАТОРНЫХ УСЛОВИЯХ №"
-    title_template = "Амбулаторная карта № {}.odt"
     paths = []
-    for card_template in card_templates:
-        paths.extend(list(Path(ARCHIVE_DIR).glob(card_template)))
+    for template in Card.PATH_TEMPLATES:
+        paths.extend(list(Path(Consultation.WORK_DIR).glob(template)))
     for path in paths:
-        document = File(path)
-        parsed = document.parse_startwith(startwith_template)
+        document = Card(path)
+        for attr in Card.TITLE_ATTRS:
+            template = Card.STARTWITH_TEMPLATES.get(attr)
+            parsed = document.parse_startwith(template)
         if not parsed:
-            raise ValueError(f"Не указан номер карты {path}.")
-        path.replace(CARD_DIR / title_template.format(parsed))
+            raise AttrNotExistsInFileError(attr, path)
+
+        path.replace(Card.WORK_DIR / Card.TITLE_TEMPLATE.format(parsed))
 
 
 @log_it
-def edit_name_birthdate_docx(path: Path) -> None:
-    attrs = ("name", "birthdate")
-    document = File(path)
+def normalize_docx(path: Path) -> None:
+    document = Consultation(path)
     is_changed = False
-    for attr in attrs:
-        template = document.startwith_templates.get(attr)
-        parsed, paragraph = document.parse_startwith(template, edit=True)
-        if not parsed:
+    for attr, normalize_func in Consultation.NORMALIZE_FUNCS.items():
+        template = Consultation.STARTWITH_TEMPLATES.get(attr)
+        try:
+            edit = document.edit_startwith(template, normalize_func)
+        except Exception:
             raise AttrNotExistsError(attr)
-        if attr == "name":
-            normalized = normalize_name(parsed)
-        elif attr == "birthdate":
-            normalized = normalize_date(parsed).strftime("%d.%m.%Y")
-        if parsed != normalized:
-            paragraph.text = paragraph.text.replace(parsed, normalized)
-            is_changed = True
+        is_changed = is_changed | edit
     if is_changed:
         document.save()
 

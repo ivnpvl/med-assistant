@@ -2,10 +2,16 @@ from docx import Document
 from odf import text, teletype
 from odf.opendocument import load
 from pathlib import Path
+from typing import Callable
 
 from config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
+from exceptions import AttrNotExistsError
+from normalizer import normalize_date, normalize_name
 from templates import (
+    CARD_PATH_TEMPLATES,
     CARD_STARTWITH_TEMPLATES,
+    CARD_TITLE_ATTRS,
+    CARD_TITLE_TEMPLATE,
     CONSULTATION_STARTWITH_TEMPLATES,
 )
 
@@ -17,6 +23,7 @@ class File:
         self.suffix = self.path.suffix
         self.document = self._get_document()
         self.paragraphs = self._get_paragraphs()
+        self.data = {"path": str(path)}
 
     def _get_document(self):
         if self.suffix == ".docx":
@@ -36,15 +43,38 @@ class File:
         if self.suffix == ".odt":
             return teletype.extractText(paragraph)
 
-    def parse_startwith(self, template: str, edit=False):
+    def parse_startwith(self, template: str) -> str | None:
+        for paragraph in self.paragraphs:
+            text = self.get_text(paragraph)
+            if template in text:
+                return text.split(template)[1].split("\n")[0].strip()
+
+    def edit_startwith(self, template: str, normalize_func: Callable) -> bool:
+        if self.suffix == ".odt":
+            raise NotImplementedError("Файл .odt не поддерживает изменение.")
         for paragraph in self.paragraphs:
             text = self.get_text(paragraph)
             if template in text:
                 parsed = text.split(template)[1].split("\n")[0].strip()
-                if edit:
-                    return parsed, paragraph
-                else:
-                    return parsed
+                if not parsed:
+                    raise
+                normalized = normalize_func(parsed)
+                if parsed != normalized:
+                    paragraph.text = paragraph.text.replace(parsed, normalized)
+                    return True
+        return False
+
+    def add_data(self, attr: str, template: str) -> None:
+        parsed = self.parse_startwith(template)
+        if not parsed:
+            raise AttrNotExistsError(attr)
+        if attr == "name":
+            surname, name, patronymic = parsed.split()
+            self.data["surname"] = surname
+            self.data["name"] = name
+            self.data["patronymic"] = patronymic
+        else:
+            self.data[attr] = parsed
 
     def save(self):
         if self.suffix == ".docx":
@@ -58,6 +88,9 @@ class Card(File):
     WORK_DIR = CARD_DIR
     JSON_PATH = JSON_DIR / "cards.json"
     STARTWITH_TEMPLATES = CARD_STARTWITH_TEMPLATES
+    PATH_TEMPLATES = CARD_PATH_TEMPLATES
+    TITLE_TEMPLATE = CARD_TITLE_TEMPLATE
+    TITLE_ATTRS = CARD_TITLE_ATTRS
 
 
 class Consultation(File):
@@ -65,6 +98,10 @@ class Consultation(File):
     WORK_DIR = ARCHIVE_DIR
     JSON_PATH = JSON_DIR / "consultations.json"
     STARTWITH_TEMPLATES = CONSULTATION_STARTWITH_TEMPLATES
+    NORMALIZE_FUNCS = {
+        "name": normalize_name,
+        "birthdate": lambda data: normalize_date(data).strftime("%d.%m.%Y"),
+    }
 
 
 class PercentageScale:

@@ -13,4 +13,8 @@ CARD_STARTWITH_TEMPLATES = {
     "phone": "тел.:",
 }
 
-CARD_FILE_TEMPLATES = ("*карта*", "*карточка*")
+CARD_PATH_TEMPLATES = ("*карта*", "*карточка*")
+
+CARD_TITLE_TEMPLATE = "Карта № {number} {surname} {name}.{suffix}"
+
+CARD_TITLE_ATTRS = ("number", "name")
