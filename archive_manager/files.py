@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Callable
 
 from config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
-from exceptions import AttrNotExistsError
+from exceptions import StringInvalidError, StringNotExistsError
 from normalizer import normalize_date, normalize_name
 from templates import (
     CARD_PATH_TEMPLATES,
@@ -24,6 +24,10 @@ class File:
         self.document = self._get_document()
         self.paragraphs = self._get_paragraphs()
         self.data = {"path": str(path)}
+        if self.suffix not in (".docx", ".odt"):
+            raise NotImplementedError(
+                "Поддерживаются только .docx или .odt расширения файлов."
+            )
 
     def _get_document(self):
         if self.suffix == ".docx":
@@ -43,31 +47,40 @@ class File:
         if self.suffix == ".odt":
             return teletype.extractText(paragraph)
 
-    def parse_startwith(self, template: str) -> str | None:
+    @staticmethod
+    def strip_bolders(text: str, left: str, right: str) -> str:
+        return text.split(left)[1].split(right)[0].strip()
+
+    def parse_startwith(self, startwith: str, endwith="\n") -> str:
         for paragraph in self.paragraphs:
             text = self.get_text(paragraph)
-            if template in text:
-                return text.split(template)[1].split("\n")[0].strip()
+            if startwith in text:
+                parsed = self.strip_bolders(text, startwith, endwith)
+                if not parsed:
+                    raise StringInvalidError(startwith)
+                return parsed
+        raise StringNotExistsError(startwith)
 
-    def edit_startwith(self, template: str, normalize_func: Callable) -> bool:
+    def edit_startwith(self, startwith: str, normalize_func: Callable) -> bool:
         if self.suffix == ".odt":
             raise NotImplementedError("Файл .odt не поддерживает изменение.")
         for paragraph in self.paragraphs:
-            text = self.get_text(paragraph)
-            if template in text:
-                parsed = text.split(template)[1].split("\n")[0].strip()
+            text = paragraph.text
+            if startwith in text:
+                parsed = self.strip_bolders(text, startwith, endwith="\n")
                 if not parsed:
-                    raise
+                    raise StringInvalidError(startwith)
                 normalized = normalize_func(parsed)
                 if parsed != normalized:
                     paragraph.text = paragraph.text.replace(parsed, normalized)
                     return True
-        return False
+                return False
+        raise StringNotExistsError(startwith)
 
     def add_data(self, attr: str, template: str) -> None:
+        if attr == "address":
+            parsed = self.parse_startwith(template, endwith=", тел.:")
         parsed = self.parse_startwith(template)
-        if not parsed:
-            raise AttrNotExistsError(attr)
         if attr == "name":
             surname, name, patronymic = parsed.split()
             self.data["surname"] = surname
@@ -102,20 +115,3 @@ class Consultation(File):
         "name": normalize_name,
         "birthdate": lambda data: normalize_date(data).strftime("%d.%m.%Y"),
     }
-
-
-class PercentageScale:
-
-    def __init__(self, number: int, percent: int = 5):
-        self.number = number
-        self.percent = percent
-        self.scale = self._get_percentage_scale()
-
-    def _get_percentage_scale(self) -> dict:
-        steps = [step for step in range(self.percent, 100, self.percent)]
-        scale = {self.number * step // 100: step for step in steps}
-        return scale
-
-    def display(self, number):
-        if number in self.scale:
-            print(f"Обработано {self.scale[number]}% файлов.")

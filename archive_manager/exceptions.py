@@ -1,20 +1,12 @@
-from pathlib import Path
+class StringInvalidError(Exception):
 
-
-class AttrNotExistsError(Exception):
-
-    def __init__(self, attr: str, message="Недостаточно данных, укажите {}."):
-        self.message = message.format(attr)
+    def __init__(self, startwith: str):
+        self.message = f"Некорректные данные в строке {startwith}."
         super().__init__(self.message)
 
 
-class AttrNotExistsInFileError(Exception):
+class StringNotExistsError(Exception):
 
-    def __init__(
-        self,
-        attr: str,
-        path: Path,
-        message="Недостаточно данных в файле {}, укажите {}."
-    ):
-        self.message = message.format(str(path), attr)
+    def __init__(self, startwith: str):
+        self.message = f"Строка {startwith} отсутствует в файле."
         super().__init__(self.message)

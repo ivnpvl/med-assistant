@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from logger.decorator import log_it
-from util import Card, Consultation, PercentageScale
+from archive_manager.files import Card, Consultation
+from informer import log_it, PercentageScale
 
 
 @log_it
@@ -14,8 +14,8 @@ def parse_file(path: Path, Target: Card | Consultation) -> dict:
 
 
 def parse_group(Target: Card | Consultation):
-    dir = Target.WORK_DIR
-    paths = list(path for path in Path(dir).iterdir() if path.suffix in (
+    folder = Target.WORK_DIR
+    paths = list(path for path in Path(folder).iterdir() if path.suffix in (
         ".docx", ".odt"))
     status_bar = PercentageScale(len(paths))
     data = []

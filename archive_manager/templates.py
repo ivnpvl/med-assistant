@@ -15,6 +15,6 @@ CARD_STARTWITH_TEMPLATES = {
 
 CARD_PATH_TEMPLATES = ("*карта*", "*карточка*")
 
-CARD_TITLE_TEMPLATE = "Карта № {number} {surname} {name}.{suffix}"
+CARD_TITLE_TEMPLATE = "Карта № {number} {surname} {name}{suffix}"
 
 CARD_TITLE_ATTRS = ("number", "name")
