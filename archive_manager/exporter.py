@@ -1,5 +1,5 @@
-from concurrent import futures
 import json
+from concurrent import futures
 from pathlib import Path
 from tqdm import tqdm
 
@@ -8,25 +8,25 @@ from informer import log_it
 
 
 @log_it
-def parse_file(path: Path, Target: Card | Consultation) -> dict:
-    document = Target(path)
-    for attr, template in Target.STARTWITH_TEMPLATES.items():
+def parse_file(path: Path, klass: Card | Consultation) -> dict:
+    document = klass(path)
+    for attr, template in klass.STARTWITH_TEMPLATES.items():
         document.add_data(attr, template)
     return document.data
 
 
-def parse_group(Target: Card | Consultation):
-    # executor = futures.ProcessPoolExecutor()
-    # actual_workers = executor._max_workers
-    # print(f"{actual_workers=}")
-    folder = Target.WORK_DIR
-    paths = list(path for path in Path(folder).iterdir() if path.suffix in (
-        ".docx", ".odt"))
-    data = []
-    for path in tqdm(paths):
-        if record := parse_file(path, Target):
-            data.append(record)
-    with open(Target.JSON_PATH, "w", encoding="utf-8") as file:
+def parse_group(klass: Card | Consultation):
+    folder = klass.WORK_DIR
+    paths = [path for path in Path(folder).iterdir() if path.suffix in (
+        ".docx", ".odt")]
+    with futures.ProcessPoolExecutor() as executor:
+        to_do = (executor.submit(parse_file, path, klass) for path in paths)
+        done_iter = futures.as_completed(to_do)
+        data = []
+        for future in tqdm(done_iter, ascii=True, total=len(paths)):
+            if record := future.result():
+                data.append(record)
+    with open(klass.JSON_PATH, "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 
