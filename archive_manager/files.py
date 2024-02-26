@@ -10,6 +10,7 @@ from normalizer import normalize_date, normalize_name
 from templates import (
     CARD_PATH_TEMPLATES,
     CARD_STARTWITH_TEMPLATES,
+    CARD_ENDWITH_TEMPLATES,
     CARD_TITLE_ATTRS,
     CARD_TITLE_TEMPLATE,
     CONSULTATION_STARTWITH_TEMPLATES,
@@ -21,13 +22,13 @@ class File:
     def __init__(self, path: Path):
         self.path = path
         self.suffix = self.path.suffix
+        if self.suffix not in (".docx", ".odt"):
+            raise NotImplementedError(
+                "Поддерживаются только файлы с расширением .docx или .odt."
+            )
         self.document = self._get_document()
         self.paragraphs = self._get_paragraphs()
         self.data = {"path": str(path)}
-        if self.suffix not in (".docx", ".odt"):
-            raise NotImplementedError(
-                "Поддерживаются только .docx или .odt расширения файлов."
-            )
 
     def _get_document(self):
         if self.suffix == ".docx":
@@ -61,21 +62,22 @@ class File:
                 return parsed
         raise StringNotExistsError(startwith)
 
-    def edit_startwith(self, startwith: str, normalize_func: Callable) -> bool:
+    def edit_startwith(self, startwith: str, edit_func: Callable) -> bool:
+        if self.suffix == ".docx":
+            for paragraph in self.paragraphs:
+                text = paragraph.text
+                if startwith in text:
+                    parsed = self.strip_bolders(text, startwith, endwith="\n")
+                    if not parsed:
+                        raise StringInvalidError(startwith)
+                    edited = edit_func(parsed)
+                    if parsed != edited:
+                        paragraph.text = paragraph.text.replace(parsed, edited)
+                        return True
+                    return False
+            raise StringNotExistsError(startwith)
         if self.suffix == ".odt":
             raise NotImplementedError("Файл .odt не поддерживает изменение.")
-        for paragraph in self.paragraphs:
-            text = paragraph.text
-            if startwith in text:
-                parsed = self.strip_bolders(text, startwith, endwith="\n")
-                if not parsed:
-                    raise StringInvalidError(startwith)
-                normalized = normalize_func(parsed)
-                if parsed != normalized:
-                    paragraph.text = paragraph.text.replace(parsed, normalized)
-                    return True
-                return False
-        raise StringNotExistsError(startwith)
 
     def add_data(self, attr: str, template: str) -> None:
         if attr == "address":

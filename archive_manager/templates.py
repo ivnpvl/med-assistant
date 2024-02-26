@@ -13,6 +13,10 @@ CARD_STARTWITH_TEMPLATES = {
     "phone": "тел.:",
 }
 
+CARD_ENDWITH_TEMPLATES = {
+    "address": "тел.:",
+}
+
 CARD_PATH_TEMPLATES = ("*карта*", "*карточка*")
 
 CARD_TITLE_TEMPLATE = "Карта № {number} {surname} {name}{suffix}"

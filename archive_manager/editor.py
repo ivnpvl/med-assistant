@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from archive_manager.files import Card, Consultation
+from files import Card, Consultation
 from informer import log_it, PercentageScale
 
 

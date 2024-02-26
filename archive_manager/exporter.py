@@ -1,8 +1,10 @@
+from concurrent import futures
 import json
 from pathlib import Path
+from tqdm import tqdm
 
-from archive_manager.files import Card, Consultation
-from informer import log_it, PercentageScale
+from files import Card, Consultation
+from informer import log_it
 
 
 @log_it
@@ -14,15 +16,16 @@ def parse_file(path: Path, Target: Card | Consultation) -> dict:
 
 
 def parse_group(Target: Card | Consultation):
+    # executor = futures.ProcessPoolExecutor()
+    # actual_workers = executor._max_workers
+    # print(f"{actual_workers=}")
     folder = Target.WORK_DIR
     paths = list(path for path in Path(folder).iterdir() if path.suffix in (
         ".docx", ".odt"))
-    status_bar = PercentageScale(len(paths))
     data = []
-    for counter, path in enumerate(paths, 1):
+    for path in tqdm(paths):
         if record := parse_file(path, Target):
             data.append(record)
-        status_bar.display(counter)
     with open(Target.JSON_PATH, "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
