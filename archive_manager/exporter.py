@@ -10,9 +10,7 @@ from informer import log_it
 @log_it
 def parse_file(path: Path, klass: Card | Consultation) -> dict:
     document = klass(path)
-    for attr, template in klass.STARTWITH_TEMPLATES.items():
-        document.add_data(attr, template)
-    return document.data
+    return document.extract_data()
 
 
 def parse_group(klass: Card | Consultation):
