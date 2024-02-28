@@ -1,42 +1,36 @@
 from docx import Document
 from odf import text, teletype
 from odf.opendocument import load
+from functools import cached_property
 from pathlib import Path
 from typing import Callable
 
+import templates
 from config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
 from exceptions import StringInvalidError, StringNotExistsError
 from normalizer import normalize_date, normalize_name
-from templates import (
-    CARD_PATH_TEMPLATES,
-    CARD_STARTWITH_TEMPLATES,
-    CARD_ENDWITH_TEMPLATES,
-    CARD_TITLE_ATTRS,
-    CARD_TITLE_TEMPLATE,
-    CONSULTATION_STARTWITH_TEMPLATES,
-)
 
 
 class File:
 
     def __init__(self, path: Path):
         self.path = path
-        self.suffix = self.path.suffix
+        self.suffix = path.suffix
         if self.suffix not in (".docx", ".odt"):
             raise NotImplementedError(
                 "Поддерживаются только файлы с расширением .docx или .odt."
             )
-        self.document = self._get_document()
-        self.paragraphs = self._get_paragraphs()
         self.data = {"path": str(path)}
 
-    def _get_document(self):
+    @cached_property
+    def document(self):
         if self.suffix == ".docx":
             return Document(self.path)
         if self.suffix == ".odt":
             return load(self.path)
 
-    def _get_paragraphs(self):
+    @property
+    def paragraphs(self):
         if self.suffix == ".docx":
             return self.document.paragraphs
         if self.suffix == ".odt":
@@ -102,18 +96,18 @@ class Card(File):
 
     WORK_DIR = CARD_DIR
     JSON_PATH = JSON_DIR / "cards.json"
-    STARTWITH_TEMPLATES = CARD_STARTWITH_TEMPLATES
-    PATH_TEMPLATES = CARD_PATH_TEMPLATES
-    TITLE_TEMPLATE = CARD_TITLE_TEMPLATE
-    TITLE_ATTRS = CARD_TITLE_ATTRS
+    FILENAME_ATTRS = templates.CARD_FILENAME_ATTRS
+    FILENAME_TEMPLATE = templates.CARD_FILENAME_TEMPLATE
+    PARSE_RANGE = templates.CARD_PARSE_RANGE
+    PATH_SIGNS = templates.CARD_PATH_SIGNS
 
 
 class Consultation(File):
 
     WORK_DIR = ARCHIVE_DIR
     JSON_PATH = JSON_DIR / "consultations.json"
-    STARTWITH_TEMPLATES = CONSULTATION_STARTWITH_TEMPLATES
     NORMALIZE_FUNCS = {
         "name": normalize_name,
         "birthdate": lambda data: normalize_date(data).strftime("%d.%m.%Y"),
     }
+    PARSE_RANGE = templates.CONSULTATION_PARSE_RANGE
