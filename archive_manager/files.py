@@ -1,7 +1,6 @@
 from docx import Document
 from odf import text, teletype
 from odf.opendocument import load
-from functools import cached_property
 from pathlib import Path
 
 import templates
@@ -19,9 +18,9 @@ class ArchiveFile:
             raise NotImplementedError(
                 "Поддерживаются только файлы с расширением .docx или .odt."
             )
+        self.document = self._load_document()
 
-    @cached_property
-    def document(self):
+    def _load_document(self):
         if self.suffix == ".docx":
             return Document(self.path)
         if self.suffix == ".odt":
@@ -50,9 +49,9 @@ class ArchiveFile:
             if frame[0] in text:
                 parsed = self.strip_bolders(text, *frame)
                 if not parsed:
-                    raise StringInvalidError(frame[0])
+                    raise StringInvalidError(frame)
                 return parsed
-        raise StringNotExistsError(frame[0])
+        raise StringNotExistsError(frame)
 
     def extract_data(self) -> dict:
         if not hasattr(self, "PARSE_FRAMES"):
@@ -66,7 +65,7 @@ class ArchiveFile:
                 try:
                     surname, name, patronymic = parsed.split()
                 except ValueError:
-                    raise StringInvalidError(frame[0])
+                    raise StringInvalidError(frame)
                 data["surname"] = surname
                 data["name"] = name
                 data["patronymic"] = patronymic
