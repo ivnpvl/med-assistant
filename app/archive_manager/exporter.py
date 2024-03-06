@@ -13,10 +13,12 @@ def parse_file(path: Path, klass: Card | Consultation) -> dict:
     return document.extract_data()
 
 
-def parse_group(klass: Card | Consultation):
+@log_it
+def parse_group(klass: Card | Consultation) -> None:
     folder = klass.WORK_DIR
     paths = [path for path in Path(folder).iterdir() if path.suffix in (
         ".docx", ".odt")]
+
     with futures.ProcessPoolExecutor() as executor:
         to_do = (executor.submit(parse_file, path, klass) for path in paths)
         done_iter = futures.as_completed(to_do)
@@ -24,5 +26,6 @@ def parse_group(klass: Card | Consultation):
         for future in tqdm(done_iter, ascii=True, total=len(paths)):
             if record := future.result():
                 data.append(record)
+
     with open(klass.JSON_PATH, "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)

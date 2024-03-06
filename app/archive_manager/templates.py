@@ -1,7 +1,5 @@
 CARD_FILENAME_TEMPLATE = "Карта № {number} {surname} {name}{suffix}"
 
-CARD_FILENAME_ATTRS = ("number", "name")
-
 CARD_PARSE_FRAMES = {
     "number": ("АМБУЛАТОРНЫХ УСЛОВИЯХ №",),
     "fullname": ("Фамилия, имя, отчество:",),

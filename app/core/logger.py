@@ -12,7 +12,7 @@ formatter = logging.Formatter(
     datefmt="%H:%M:%S",
 )
 
-handler = logging.FileHandler(filename)
+handler = logging.FileHandler(filename, delay=True)
 handler.setFormatter(formatter)
 
 logger = logging.getLogger(__name__)

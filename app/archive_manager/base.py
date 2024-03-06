@@ -2,22 +2,22 @@ from docx import Document
 from odf import text, teletype
 from odf.opendocument import load
 from pathlib import Path
+from typing import Callable
 
-from archive_manager import templates
-from archive_manager.exceptions import StringInvalidError, StringNotExistsError
+from archive_manager import exceptions, templates
 from archive_manager.normalizer import normalize_date, normalize_name
 from core.config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
 
 
 class ArchiveFile:
 
+    EXTENSIONS = (".docx", ".odt")
+
     def __init__(self, path: Path) -> None:
         self.path = path
         self.suffix = path.suffix
-        if self.suffix not in (".docx", ".odt"):
-            raise NotImplementedError(
-                "Поддерживаются только файлы с расширением .docx или .odt."
-            )
+        if self.suffix not in self.__class__.EXTENSIONS:
+            raise exceptions.OnlyFormatSupported(self.__class__.EXTENSIONS)
         self.document = self._load_document()
         self.paragraphs = self._get_paragraphs()
 
@@ -49,15 +49,14 @@ class ArchiveFile:
             if frame[0] in text:
                 parsed = self.strip_bolders(text, *frame)
                 if not parsed:
-                    raise StringInvalidError(frame)
+                    raise exceptions.InvalidString(frame)
                 return parsed
-        raise StringNotExistsError(frame)
+        raise exceptions.StringNotExists(frame)
 
     def extract_data(self) -> dict:
-        if not hasattr(self, "PARSE_FRAMES"):
-            raise NotImplementedError(
-                "Необходимо задать PARSE_FRAMES в дочернем классе."
-            )
+        parse_attr = "PARSE_FRAMES"
+        if not hasattr(self, parse_attr):
+            raise exceptions.HeritageAttrNotExists(parse_attr)
         data = {}
         for attr, frame in self.PARSE_FRAMES.items():
             parsed = self.parse(frame)
@@ -65,7 +64,7 @@ class ArchiveFile:
                 try:
                     surname, name, patronymic = parsed.split()
                 except ValueError:
-                    raise StringInvalidError(frame)
+                    raise exceptions.InvalidString(frame)
                 data["surname"] = surname
                 data["name"] = name
                 data["patronymic"] = patronymic
@@ -73,35 +72,11 @@ class ArchiveFile:
                 data[attr] = parsed
         return data
 
-    def edit_startwith(self, startwith: str, edit_func) -> bool:
-        if self.suffix == ".docx":
-            for paragraph in self.paragraphs:
-                text = paragraph.text
-                if startwith in text:
-                    parsed = self.strip_bolders(text, startwith, endwith="\n")
-                    if not parsed:
-                        raise StringInvalidError(startwith)
-                    edited = edit_func(parsed)
-                    if parsed != edited:
-                        paragraph.text = paragraph.text.replace(parsed, edited)
-                        return True
-                    return False
-            raise StringNotExistsError(startwith)
-        if self.suffix == ".odt":
-            raise NotImplementedError("Файл .odt не поддерживает изменение.")
-
-    def save(self):
-        if self.suffix == ".docx":
-            self.document.save(self.path)
-        if self.suffix == ".odt":
-            raise NotImplementedError("Файл .odt не поддерживает изменение.")
-
 
 class Card(ArchiveFile):
 
     WORK_DIR = CARD_DIR
     JSON_PATH = JSON_DIR / "cards.json"
-    FILENAME_ATTRS = templates.CARD_FILENAME_ATTRS
     FILENAME_TEMPLATE = templates.CARD_FILENAME_TEMPLATE
     PARSE_FRAMES = templates.CARD_PARSE_FRAMES
     PATH_SIGNS = templates.CARD_PATH_SIGNS
@@ -112,7 +87,37 @@ class Consultation(ArchiveFile):
     WORK_DIR = ARCHIVE_DIR
     JSON_PATH = JSON_DIR / "consultations.json"
     NORMALIZE_FUNCS = {
-        "name": normalize_name,
+        "fullname": normalize_name,
         "birthdate": lambda data: normalize_date(data).strftime("%d.%m.%Y"),
     }
     PARSE_FRAMES = templates.CONSULTATION_PARSE_FRAMES
+
+    def normalize_docx(self) -> bool:
+        if self.suffix != ".docx":
+            raise exceptions.ImmutableFile()
+        is_changed = False
+        for attr, edit_func in self.__class__.NORMALIZE_FUNCS.items():
+            frame = self.__class__.PARSE_FRAMES.get(attr)
+            edit = self._parse_and_edit_docx(frame, edit_func)
+            is_changed = is_changed | edit
+        if is_changed:
+            self.document.save(self.path)
+        return is_changed
+
+    def _parse_and_edit_docx(
+        self,
+        frame: tuple[str],
+        edit_func: Callable,
+    ) -> bool:
+        for paragraph in self.paragraphs:
+            text = paragraph.text
+            if frame[0] in text:
+                parsed = self.strip_bolders(text, *frame)
+                if not parsed:
+                    raise exceptions.InvalidString(frame)
+                edited = edit_func(parsed)
+                if parsed != edited:
+                    paragraph.text = paragraph.text.replace(parsed, edited)
+                    return True
+                return False
+        raise exceptions.StringNotExists(frame)
