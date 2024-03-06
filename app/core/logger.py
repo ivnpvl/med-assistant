@@ -1,11 +1,11 @@
 import logging
-from datetime import datetime
+from datetime import date
 from functools import wraps
 
-from config import LOG_DIR
+from core.config import LOG_DIR
 
 
-filename = LOG_DIR / "{:%Y-%m-%d}.log".format(datetime.now())
+filename = LOG_DIR / "{:%Y-%m-%d}.log".format(date.today())
 
 formatter = logging.Formatter(
     fmt="%(levelname)s, %(asctime)s: %(message)s",

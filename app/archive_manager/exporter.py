@@ -3,8 +3,8 @@ from concurrent import futures
 from pathlib import Path
 from tqdm import tqdm
 
-from files import Card, Consultation
-from informer import log_it
+from archive_manager.base import Card, Consultation
+from app.core.logger import log_it
 
 
 @log_it
@@ -26,10 +26,3 @@ def parse_group(klass: Card | Consultation):
                 data.append(record)
     with open(klass.JSON_PATH, "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
-
-
-if __name__ == "__main__":
-    parse_file(
-        Path('/home/ivnpvl/Development/med-assistant/data/archive/Богомолова Полина 15.07.16.odt'),
-        Consultation
-    )

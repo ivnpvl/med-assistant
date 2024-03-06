@@ -3,10 +3,10 @@ from odf import text, teletype
 from odf.opendocument import load
 from pathlib import Path
 
-import templates
-from config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
-from exceptions import StringInvalidError, StringNotExistsError
-from normalizer import normalize_date, normalize_name
+from archive_manager import templates
+from archive_manager.exceptions import StringInvalidError, StringNotExistsError
+from archive_manager.normalizer import normalize_date, normalize_name
+from core.config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
 
 
 class ArchiveFile:
@@ -19,6 +19,7 @@ class ArchiveFile:
                 "Поддерживаются только файлы с расширением .docx или .odt."
             )
         self.document = self._load_document()
+        self.paragraphs = self._get_paragraphs()
 
     def _load_document(self):
         if self.suffix == ".docx":
@@ -26,8 +27,7 @@ class ArchiveFile:
         if self.suffix == ".odt":
             return load(self.path)
 
-    @property
-    def paragraphs(self):
+    def _get_paragraphs(self):
         if self.suffix == ".docx":
             return self.document.paragraphs
         if self.suffix == ".odt":

@@ -1,15 +1,15 @@
 from pathlib import Path
 
-from files import Card, Consultation
-from informer import log_it, PercentageScale
+from archive_manager.base import Card, Consultation
+from core.logger import log_it
 
 
-# @log_it
-# def replace_cards_from_archive() -> None:
-#     paths = []
-#     for template in Card.PATH_TEMPLATES:
-#         paths.extend(list(Path(Consultation.WORK_DIR).glob(template)))
-#     for path in paths:
+@log_it
+def replace_card_from_archive() -> None:
+    paths = []
+    for template in Card.PATH_SIGNS:
+        paths.extend(list(Path(Consultation.WORK_DIR).glob(template)))
+    print(paths)
 
 
 @log_it
@@ -33,11 +33,3 @@ def normalize_docx(path: Path) -> None:
         is_changed = is_changed | edit
     if is_changed:
         document.save()
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
