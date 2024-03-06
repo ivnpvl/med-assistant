@@ -29,4 +29,7 @@ def parse_group(klass: Card | Consultation):
 
 
 if __name__ == "__main__":
-    parse_group(Card)
+    parse_file(
+        Path('/home/ivnpvl/Development/med-assistant/data/archive/Богомолова Полина 15.07.16.odt'),
+        Consultation
+    )
