@@ -36,6 +36,7 @@ def normalize_date(data: str) -> date:
         raise ValueError("Неправильно указана дата.")
     return normalized_date
 
+
 def normalize_name(data: str) -> str:
     if not data.replace(" ", ""):
         raise ValueError("Имя не указано.")

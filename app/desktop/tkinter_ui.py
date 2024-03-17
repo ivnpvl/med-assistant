@@ -1,8 +1,9 @@
-import tkinter as tk
-import app.todo.template.text as text
-from tkinter import messagebox as mb
 
 
+import app.desktop.template.text as text
+
+
+"""
 class Label(tk.Label):
     def __init__(self, text):
         super().__init__(root, text=text, bg=main_color, font=main_font)
@@ -44,10 +45,9 @@ def get_start():
 
 def get_check_buttons():
     for check in check_buttons:
+        pass
 
-    pass
 
-    """
     
 # second screen- status
 def checks_1():
