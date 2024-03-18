@@ -1,50 +1,73 @@
+import sys
 
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QRegularExpressionValidator, QDoubleValidator
 from PyQt6.QtWidgets import (QMainWindow, QLabel, QLineEdit, QFormLayout,
-    QTextEdit, QGridLayout, QApplication, QWidget, QDialog, QVBoxLayout, QGroupBox, 
-    QDialogButtonBox)
+    QTextEdit, QGridLayout, QApplication, QWidget, QDialog, QVBoxLayout, QGroupBox,
+    QDialogButtonBox, QPlainTextEdit, QHBoxLayout, QDateEdit, QCheckBox, QPushButton)
 
 
-class Window(QDialog):
+class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Назначение невролога")
-        self.setMinimumSize(1280, 640)
-        self.setStyleSheet("background-color: #80C060; font-family: Courier; font-size: 14pt")
-        # QLineEdit, QTextEdit{background-color: #A0E080}
-        self.setFont(QFont("Arial", 40))
-        self.initUI()
-        self.show()
+        self.setFixedSize(1280, 640)
+        self.setStyleSheet("background-color: #80C060; font-family: Courier; font-size: 12pt")
+        self.mainWidget = QWidget()
+        self.createMainWidget()
+        self.setCentralWidget(self.mainWidget)
 
-    def initUI(self):
-
+    def createMainWidget(self):
+        self.mainWidget.setStyleSheet("QLineEdit, QPlainTextEdit {background-color: #90D070}")
         mainLayout = QVBoxLayout()
-        self.formGroupBox = QGroupBox("Form 1")
+        self.formGroupBox = QGroupBox("Данные пациента")
         self.createForm()
         mainLayout.addWidget(self.formGroupBox)
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
         mainLayout.addWidget(self.buttonBox)
-        self.setLayout(mainLayout)
-
+        self.mainWidget.setLayout(mainLayout)
 
     def createForm(self):
-        layout = QFormLayout()
-        layout.setSpacing(10)
-        patient_edit = QLineEdit()
-        layout.addRow("Пациент:", patient_edit)
-        birthdate_edit = QLineEdit()
-        layout.addRow("Дата рождения:", birthdate_edit)
-        complaint_edit = QTextEdit()
-        # complaint_edit.setFixedHeight(3)
-        layout.addRow("Жалобы:", complaint_edit)
+        self.formLayout = QFormLayout()
+        self.formLayout.setSpacing(10)
 
-        #     (QLabel("Жалобы:"), QTextEdit().setFixedHeight(3)),
-        #     (QLabel("Голова, см:"), QLineEdit()),
-        #     (QLabel("Грудь, см:"), QLineEdit()),
-        #     (QLabel("Большой родничок, мм:"), QLineEdit()),
-        #     (QLabel("Аллергические реакции:"), QLineEdit()),
-        # )
+        self.patientEdit = QLineEdit()
+        self.patientEdit.setPlaceholderText("Фамилия Имя Отчество")
+        self.formLayout.addRow("Пациент:", self.patientEdit)
+
+        self.birthdateEdit = QLineEdit()
+        self.birthdateEdit.setPlaceholderText("ДД.ММ.ГГГГ")
+        self.formLayout.addRow("Дата рождения:", self.birthdateEdit)
+
+        self.complaintEdit = QPlainTextEdit()
+        self.complaintEdit.setPlaceholderText("Жалоб нет.")
+        self.formLayout.addRow("Жалобы:", self.complaintEdit)
+
+        self.headSizeEdit = QLineEdit()
+        self.headSizeEdit.setPlaceholderText("34.5")
+        self.headSizeEdit.setValidator(QDoubleValidator())
+        self.formLayout.addRow("Голова, см:", self.headSizeEdit)
+
+        self.chestSizeEdit = QLineEdit()
+        self.chestSizeEdit.setPlaceholderText("34.5")
+        self.chestSizeEdit.setValidator(QDoubleValidator())
+        self.formLayout.addRow("Грудь, см:", self.chestSizeEdit)
+
+        self.fountSizeEdit = QLineEdit()
+        self.fountSizeEdit.setPlaceholderText("1.5")
+        self.fountSizeEdit.setValidator(QDoubleValidator())
+        self.formLayout.addRow("Большой родничок, мм:", self.fountSizeEdit)
+
+        self.allergyEdit = QLineEdit()
+        self.allergyEdit.setPlaceholderText("Наличие аллергических реакций отрицают.")
+        self.formLayout.addRow("Аллергические реакции:", self.allergyEdit)
+
+        self.addCardCheck = QPushButton("Завести новую амбулаторную карту")
+        self.addCardCheck.setCheckable(True)
+        self.addCardCheck.clicked.connect(self.addCardForm)
+        self.formLayout.addRow(self.addCardCheck)
 
         # CARD_ELEMS = (
         #     "Пол:",
@@ -52,14 +75,24 @@ class Window(QDialog):
         #     "Адрес:",
         #     "Телефон:",
         # )
-        self.formGroupBox.setLayout(layout)
+        self.formGroupBox.setLayout(self.formLayout)
+
+    def addCardForm(self):
+        self.formLayout = QFormLayout()
+        self.formLayout.setSpacing(10)
+
+        self.p = QLineEdit()
+        self.p.setPlaceholderText("Фамилия Имя Отчество")
+        self.formLayout.addRow("Пациент:", self.p)
+
 
 
 if __name__ == "__main__":
 
     app = QApplication([])
-    window = Window()
-    app.exec()
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
 
 
 #         # adding action when form is accepted

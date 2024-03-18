@@ -1,5 +1,5 @@
 import os
-import app.todo.template.text as text
+import app.desktop.checkbuttons as text
 import tkinter as tk
 from tkinter import messagebox as mb
 from docx import Document
