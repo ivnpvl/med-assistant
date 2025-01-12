@@ -86,9 +86,7 @@ class MainWindow(QMainWindow):
         self.formLayout.addRow("Пациент:", self.p)
 
 
-
 if __name__ == "__main__":
-
     app = QApplication([])
     window = MainWindow()
     window.show()
@@ -99,7 +97,7 @@ if __name__ == "__main__":
 #         self.buttonBox.accepted.connect(self.getInfo)
 
 #         # adding action when form is rejected
-#         self.buttonBox.rejected.connect(self.reject)    
+#         self.buttonBox.rejected.connect(self.reject)
 
 #     # get info method called when form is accepted
 #     def getInfo(self):
