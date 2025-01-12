@@ -2,6 +2,7 @@ from pathlib import Path
 
 from archive_manager.editor import replace_card
 
+
 def main():
     replace_card(Path('/home/ivnpvl/Development/med-assistant/data/archive/Шурупова Алиса 20.09.17 (карточка).odt'))
 
