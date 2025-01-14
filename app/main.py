@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from archive_manager.editor import replace_card
+from archiver.editor import replace_card
 
 
 def main():

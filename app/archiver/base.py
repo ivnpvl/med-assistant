@@ -4,8 +4,8 @@ from odf.opendocument import load
 from pathlib import Path
 from typing import Callable
 
-from archive_manager import exceptions, templates
-from archive_manager.normalizer import normalize_date, normalize_name
+from archiver import exceptions, templates
+from archiver.normalizer import normalize_date, normalize_name
 from core.config import ARCHIVE_DIR, CARD_DIR, JSON_DIR
 
 

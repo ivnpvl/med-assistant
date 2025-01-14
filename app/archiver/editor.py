@@ -2,7 +2,7 @@ from concurrent import futures
 from pathlib import Path
 from tqdm import tqdm
 
-from archive_manager.base import Card, Consultation
+from archiver.base import Card, Consultation
 from core.logger import log_it
 
 

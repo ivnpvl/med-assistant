@@ -5,20 +5,29 @@ from PyQt6.QtWidgets import (QMainWindow, QLabel, QLineEdit, QFormLayout,
     QTextEdit, QGridLayout, QApplication, QWidget, QDialog, QVBoxLayout, QGroupBox,
     QDialogButtonBox, QPlainTextEdit, QHBoxLayout, QDateEdit, QCheckBox, QPushButton)
 
+from ui.config import (
+    BACKGROUND_SHEET,
+    BACKGROUND_WIDGET,
+    FONT_FAMILY,
+    FONT_SIZE,
+    SHEET_SIZE,
+    TITLE,
+)
+
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Назначение невролога")
-        self.setFixedSize(1280, 640)
-        self.setStyleSheet("background-color: #80C060; font-family: Courier; font-size: 12pt")
+        self.setWindowTitle(TITLE)
+        self.setFixedSize(*SHEET_SIZE)
+        self.setStyleSheet(f"background-color: {BACKGROUND_SHEET}; font-family: {FONT_FAMILY}; font-size: {FONT_SIZE}")
         self.mainWidget = QWidget()
         self.createMainWidget()
         self.setCentralWidget(self.mainWidget)
 
     def createMainWidget(self):
-        self.mainWidget.setStyleSheet("QLineEdit, QPlainTextEdit {background-color: #90D070}")
+        self.mainWidget.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET}}}")
         mainLayout = QVBoxLayout()
         self.formGroupBox = QGroupBox("Данные пациента")
         self.createForm()
