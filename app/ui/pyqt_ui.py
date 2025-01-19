@@ -22,11 +22,10 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(TITLE)
         self.setFixedSize(*SHEET_SIZE)
         self.setStyleSheet(f"background-color: {BACKGROUND_SHEET}; font-family: {FONT_FAMILY}; font-size: {FONT_SIZE}")
-        self.mainWidget = QWidget()
         self.createMainWidget()
-        self.setCentralWidget(self.mainWidget)
 
     def createMainWidget(self):
+        self.mainWidget = QWidget()
         self.mainWidget.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET}}}")
         mainLayout = QVBoxLayout()
         self.formGroupBox = QGroupBox("Данные пациента")
@@ -37,6 +36,7 @@ class MainWindow(QMainWindow):
         )
         mainLayout.addWidget(self.buttonBox)
         self.mainWidget.setLayout(mainLayout)
+        self.setCentralWidget(self.mainWidget)
 
     def createForm(self):
         self.formLayout = QFormLayout()
@@ -87,6 +87,7 @@ class MainWindow(QMainWindow):
         self.formGroupBox.setLayout(self.formLayout)
 
     def addCardForm(self):
+        print("Add card form")
         self.formLayout = QFormLayout()
         self.formLayout.setSpacing(10)
 
