@@ -1,32 +1,23 @@
-import sys
-
-from PyQt6.QtGui import QFont, QRegularExpressionValidator, QDoubleValidator
-from PyQt6.QtWidgets import (QMainWindow, QLabel, QLineEdit, QFormLayout,
-    QTextEdit, QGridLayout, QApplication, QWidget, QDialog, QVBoxLayout, QGroupBox,
-    QDialogButtonBox, QPlainTextEdit, QHBoxLayout, QDateEdit, QCheckBox, QPushButton)
-
-from ui.config import (
-    BACKGROUND_SHEET,
-    BACKGROUND_WIDGET,
-    FONT_FAMILY,
-    FONT_SIZE,
-    SHEET_SIZE,
-    TITLE,
+from PyQt6.QtGui import QDoubleValidator
+from PyQt6.QtWidgets import (
+    QDialogButtonBox,
+    QGroupBox,
+    QFormLayout,
+    QLineEdit,
+    QPlainTextEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
 )
 
+from ui.config import BACKGROUND_WIDGET_COLOR
 
-class MainWindow(QMainWindow):
 
+class PatientDataWindow(QWidget):
+    """Страница с информацией о пациенте."""
     def __init__(self):
         super().__init__()
-        self.setWindowTitle(TITLE)
-        self.setFixedSize(*SHEET_SIZE)
-        self.setStyleSheet(f"background-color: {BACKGROUND_SHEET}; font-family: {FONT_FAMILY}; font-size: {FONT_SIZE}")
-        self.createMainWidget()
-
-    def createMainWidget(self):
-        self.mainWidget = QWidget()
-        self.mainWidget.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET}}}")
+        self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
         mainLayout = QVBoxLayout()
         self.formGroupBox = QGroupBox("Данные пациента")
         self.createForm()
@@ -35,8 +26,7 @@ class MainWindow(QMainWindow):
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         mainLayout.addWidget(self.buttonBox)
-        self.mainWidget.setLayout(mainLayout)
-        self.setCentralWidget(self.mainWidget)
+        self.setLayout(mainLayout)
 
     def createForm(self):
         self.formLayout = QFormLayout()
@@ -94,28 +84,3 @@ class MainWindow(QMainWindow):
         self.p = QLineEdit()
         self.p.setPlaceholderText("Фамилия Имя Отчество")
         self.formLayout.addRow("Пациент:", self.p)
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
-
-
-#         # adding action when form is accepted
-#         self.buttonBox.accepted.connect(self.getInfo)
-
-#         # adding action when form is rejected
-#         self.buttonBox.rejected.connect(self.reject)
-
-#     # get info method called when form is accepted
-#     def getInfo(self):
-
-#         # printing the form information
-#         print("Person Name : {0}".format(self.nameLineEdit.text()))
-#         print("Degree : {0}".format(self.degreeComboBox.currentText()))
-#         print("Age : {0}".format(self.ageSpinBar.text()))
-
-#         # closing the window
-#         self.close()
