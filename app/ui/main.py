@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 from PyQt6.QtWidgets import (
     QApplication,
@@ -8,7 +9,7 @@ from PyQt6.QtWidgets import (
     QStackedWidget,
     QWidget,
 )
-
+sys.path.append(str(Path.cwd() / 'app'))
 from ui.config import (
     BACKGROUND_SHEET_COLOR,
     FONT_FAMILY,
