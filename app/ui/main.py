@@ -1,5 +1,4 @@
 import sys
-from pathlib import Path
 
 from PyQt6.QtWidgets import (
     QApplication,
@@ -9,43 +8,41 @@ from PyQt6.QtWidgets import (
     QStackedWidget,
     QWidget,
 )
-sys.path.append(str(Path.cwd() / 'app'))
-from ui.config import (
+
+from app.ui.config import (
     BACKGROUND_SHEET_COLOR,
     FONT_FAMILY,
     FONT_SIZE,
     SHEET_SIZE,
     TITLE,
 )
-from ui.patient_data import PatientDataWindow
+from app.ui.patientData import PatientCardWindow, PatientDataWindow
 
 
 class StackedWindow(QWidget):
     """Основное окно выбора страниц."""
     def __init__(self):
         super().__init__()
-        self.leftList = QListWidget()
-        self.leftList.insertItem(0, 'Данные пациента')
-        self.leftList.insertItem(1, 'Personal')
-        self.leftList.insertItem(2, 'Educational')
+        self.windowTag = QListWidget()
+        self.windowTag.insertItem(0, 'Данные пациента')
+        self.windowTag.insertItem(1, 'Амбулаторная карта')
 
         self.patientData = PatientDataWindow()
+        self.patientCard = PatientCardWindow()
 
-        self.stack = QStackedWidget(parent=self)
-        self.stack.addWidget(self.patientData)
+        self.windowStack = QStackedWidget(parent=self)
+        self.windowStack.addWidget(self.patientData)
+        self.windowStack.addWidget(self.patientCard)
 
-        hbox = QHBoxLayout(self)
-        hbox.addWidget(self.leftList)
-        hbox.addWidget(self.stack)
-
-        self.setLayout(hbox)
-        self.leftList.currentRowChanged.connect(self.display)
-        self.setGeometry(300, 50, 10, 10)
-        self.setWindowTitle('StackedWidget demo')
+        hBoxLayout = QHBoxLayout(self)
+        hBoxLayout.addWidget(self.windowTag, stretch=1)
+        hBoxLayout.addWidget(self.windowStack, stretch=5)
+        self.setLayout(hBoxLayout)
+        self.windowTag.currentRowChanged.connect(self.display)
         self.show()
 
     def display(self, idx):
-        self.stack.setCurrentIndex(idx)
+        self.windowStack.setCurrentIndex(idx)
 
 
 class MainWindow(QMainWindow):

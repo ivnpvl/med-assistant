@@ -1,16 +1,18 @@
 from PyQt6.QtGui import QDoubleValidator
 from PyQt6.QtWidgets import (
+    QButtonGroup,
     QDialogButtonBox,
     QGroupBox,
     QFormLayout,
     QLineEdit,
     QPlainTextEdit,
-    QPushButton,
+    QRadioButton,
+    QHBoxLayout,
     QVBoxLayout,
     QWidget,
 )
 
-from ui.config import BACKGROUND_WIDGET_COLOR
+from app.ui.config import BACKGROUND_WIDGET_COLOR
 
 
 class PatientDataWindow(QWidget):
@@ -63,24 +65,50 @@ class PatientDataWindow(QWidget):
         self.allergyEdit.setPlaceholderText("Наличие аллергических реакций отрицают.")
         self.formLayout.addRow("Аллергические реакции:", self.allergyEdit)
 
-        self.addCardCheck = QPushButton("Завести новую амбулаторную карту")
-        self.addCardCheck.setCheckable(True)
-        self.addCardCheck.clicked.connect(self.addCardForm)
-        self.formLayout.addRow(self.addCardCheck)
-
-        # CARD_ELEMS = (
-        #     "Пол:",
-        #     "Населённый пункт:",
-        #     "Адрес:",
-        #     "Телефон:",
-        # )
         self.formGroupBox.setLayout(self.formLayout)
 
-    def addCardForm(self):
-        print("Add card form")
+
+class PatientCardWindow(QWidget):
+    """Амбулаторная карта пациента."""
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
+        mainLayout = QVBoxLayout()
+        self.formGroupBox = QGroupBox("Амбулаторная карта")
+        self.createForm()
+        mainLayout.addWidget(self.formGroupBox)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        mainLayout.addWidget(self.buttonBox)
+        self.setLayout(mainLayout)
+
+    def createForm(self):
         self.formLayout = QFormLayout()
         self.formLayout.setSpacing(10)
 
-        self.p = QLineEdit()
-        self.p.setPlaceholderText("Фамилия Имя Отчество")
-        self.formLayout.addRow("Пациент:", self.p)
+        self.sexMaleButton = QRadioButton("мужской")
+        self.sexFemaleButton = QRadioButton("женский")
+        self.sexButtonLayout = QHBoxLayout()
+        self.sexButtonLayout.addWidget(self.sexMaleButton)
+        self.sexButtonLayout.addWidget(self.sexFemaleButton)
+        self.sexButtonLayout.addStretch()
+        self.formLayout.addRow("Пол:", self.sexButtonLayout)
+
+        self.sexButtonGroup = QButtonGroup()
+        self.sexButtonGroup.addButton(self.sexMaleButton)
+        self.sexButtonGroup.addButton(self.sexFemaleButton)
+
+        self.settlementEdit = QLineEdit()
+        self.settlementEdit.setPlaceholderText("Пензенская обл., г. Пенза")
+        self.formLayout.addRow("Населённый пункт:", self.settlementEdit)
+
+        self.addressEdit = QLineEdit()
+        self.addressEdit.setPlaceholderText("ул. Пушкина, 15")
+        self.formLayout.addRow("Адрес:", self.addressEdit)
+
+        self.phoneNumberEdit = QLineEdit()
+        self.phoneNumberEdit.setPlaceholderText("+7(987)654-32-10")
+        self.formLayout.addRow("Телефон:", self.phoneNumberEdit)
+
+        self.formGroupBox.setLayout(self.formLayout)
