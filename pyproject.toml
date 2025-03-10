@@ -1,19 +1,21 @@
-[tool.poetry]
-name = "med-assistant"
+[project]
+name = "app"
 version = "0.1.0"
-description = ""
-authors = ["Ivan Pavlov <ivnpvl@disroot.org>"]
+description = "Generator and storage of medical documentation."
+requires-python = ">=3.13"
+authors = [
+    { name = "Ivan Pavlov", email = "<ivnpvl@disroot.org>" },
+]
+license = "MIT"
 readme = "README.md"
-package-mode = false
+dependencies = [
+    "pyqt6>=6.8.0",
+    "python-docx>=1.1.2",
+    "odfpy>=1.4.1",
+]
 
-[tool.poetry.dependencies]
-python = "^3.13"
-pyqt6 = "^6.8.0"
-python-docx = "^1.1.2"
-odfpy = "^1.4.1"
-
-[tool.poetry.scripts]
-app = "app.ui.main"
+[project.scripts]
+app = "app.main:run"
 
 [build-system]
 requires = ["poetry-core"]

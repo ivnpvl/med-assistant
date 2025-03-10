@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.mainWidget)
 
 
-if __name__ == "__main__":
+def init_ui():
     app = QApplication([])
     window = MainWindow()
     window.show()
