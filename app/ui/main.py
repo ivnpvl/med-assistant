@@ -16,6 +16,7 @@ from app.ui.config import (
     SHEET_SIZE,
     TITLE,
 )
+from app.ui.checkedData import CheckboxGridWindow
 from app.ui.patientData import PatientCardWindow, PatientDataWindow
 
 
@@ -26,13 +27,16 @@ class StackedWindow(QWidget):
         self.windowTag = QListWidget()
         self.windowTag.insertItem(0, 'Данные пациента')
         self.windowTag.insertItem(1, 'Амбулаторная карта')
+        self.windowTag.insertItem(2, 'checkboxxxxes!')
 
         self.patientData = PatientDataWindow()
         self.patientCard = PatientCardWindow()
+        self.status1 = CheckboxGridWindow()
 
         self.windowStack = QStackedWidget(parent=self)
         self.windowStack.addWidget(self.patientData)
         self.windowStack.addWidget(self.patientCard)
+        self.windowStack.addWidget(self.status1)
 
         hBoxLayout = QHBoxLayout(self)
         hBoxLayout.addWidget(self.windowTag, stretch=1)

@@ -1,0 +1,40 @@
+from PyQt6.QtWidgets import (
+    QCheckBox,
+    QDialogButtonBox,
+    QGridLayout,
+    QGroupBox,
+    QVBoxLayout,
+    QWidget,
+)
+
+from app.ui.checkboxes import status_1
+from app.ui.config import BACKGROUND_WIDGET_COLOR, CHECKBOX_HEIGHT, CHECKBOX_WIDTH
+
+
+class CheckboxGridWindow(QWidget):
+    """Информация о пациенте."""
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
+        mainLayout = QVBoxLayout()
+        self.formGroupBox = QGroupBox("checkbxxxxxxs")
+        self.createForm()
+        mainLayout.addWidget(self.formGroupBox)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        mainLayout.addWidget(self.buttonBox)
+        self.setLayout(mainLayout)
+
+    def createForm(self):
+        gridLayout = QGridLayout()
+        checkBoxIterator = iter(status_1)
+        for i in range(CHECKBOX_HEIGHT):
+            for j in range(CHECKBOX_WIDTH):
+                try:
+                    checkBoxText = next(checkBoxIterator)
+                    gridLayout.addWidget(QCheckBox(checkBoxText), i, j)
+                except StopIteration:
+                    break
+
+        self.formGroupBox.setLayout(gridLayout)

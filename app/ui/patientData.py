@@ -16,7 +16,7 @@ from app.ui.config import BACKGROUND_WIDGET_COLOR
 
 
 class PatientDataWindow(QWidget):
-    """Страница с информацией о пациенте."""
+    """Информация о пациенте."""
     def __init__(self):
         super().__init__()
         self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
