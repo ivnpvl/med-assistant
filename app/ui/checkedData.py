@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from app.ui.checkboxes import status_1
+from app.ui.checkboxes import base_status
 from app.ui.config import BACKGROUND_WIDGET_COLOR, CHECKBOX_HEIGHT, CHECKBOX_WIDTH
 
 
@@ -28,12 +28,12 @@ class CheckboxGridWindow(QWidget):
 
     def createForm(self):
         gridLayout = QGridLayout()
-        checkBoxIterator = iter(status_1)
-        for i in range(CHECKBOX_HEIGHT):
-            for j in range(CHECKBOX_WIDTH):
+        checkBoxIterator = iter(base_status)
+        for h_idx in range(CHECKBOX_HEIGHT):
+            for w_idx in range(CHECKBOX_WIDTH):
                 try:
                     checkBoxText = next(checkBoxIterator)
-                    gridLayout.addWidget(QCheckBox(checkBoxText), i, j)
+                    gridLayout.addWidget(QCheckBox(checkBoxText), h_idx, w_idx)
                 except StopIteration:
                     break
 

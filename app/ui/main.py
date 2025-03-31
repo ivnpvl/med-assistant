@@ -31,16 +31,16 @@ class StackedWindow(QWidget):
 
         self.patientData = PatientDataWindow()
         self.patientCard = PatientCardWindow()
-        self.status1 = CheckboxGridWindow()
+        self.baseStatus = CheckboxGridWindow()
 
         self.windowStack = QStackedWidget(parent=self)
         self.windowStack.addWidget(self.patientData)
         self.windowStack.addWidget(self.patientCard)
-        self.windowStack.addWidget(self.status1)
+        self.windowStack.addWidget(self.baseStatus)
 
         hBoxLayout = QHBoxLayout(self)
-        hBoxLayout.addWidget(self.windowTag, stretch=1)
-        hBoxLayout.addWidget(self.windowStack, stretch=5)
+        hBoxLayout.addWidget(self.windowTag)
+        hBoxLayout.addWidget(self.windowStack)
         self.setLayout(hBoxLayout)
         self.windowTag.currentRowChanged.connect(self.display)
         self.show()
