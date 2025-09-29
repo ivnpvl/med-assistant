@@ -2,7 +2,7 @@ import logging
 from datetime import date
 from functools import wraps
 
-from core.config import LOG_DIR
+from app.core.config import LOG_DIR
 
 
 filename = LOG_DIR / "{:%Y-%m-%d}.log".format(date.today())

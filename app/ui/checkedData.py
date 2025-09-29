@@ -13,11 +13,13 @@ from app.ui.config import BACKGROUND_WIDGET_COLOR, CHECKBOX_HEIGHT, CHECKBOX_WID
 
 class CheckboxGridWindow(QWidget):
     """Информация о пациенте."""
-    def __init__(self):
+    def __init__(self, name: str = "Окно с опциями"):
         super().__init__()
+
+        self.name = name
         self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
         mainLayout = QVBoxLayout()
-        self.formGroupBox = QGroupBox("checkbxxxxxxs")
+        self.formGroupBox = QGroupBox(self.name)
         self.createForm()
         mainLayout.addWidget(self.formGroupBox)
         self.buttonBox = QDialogButtonBox(

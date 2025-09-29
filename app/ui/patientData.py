@@ -16,12 +16,13 @@ from app.ui.config import BACKGROUND_WIDGET_COLOR
 
 
 class PatientDataWindow(QWidget):
-    """Информация о пациенте."""
-    def __init__(self):
+    def __init__(self, name: str = "Данные пациента"):
         super().__init__()
+
+        self.name = name
         self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
         mainLayout = QVBoxLayout()
-        self.formGroupBox = QGroupBox("Данные пациента")
+        self.formGroupBox = QGroupBox(self.name)
         self.createForm()
         mainLayout.addWidget(self.formGroupBox)
         self.buttonBox = QDialogButtonBox(
@@ -69,12 +70,13 @@ class PatientDataWindow(QWidget):
 
 
 class PatientCardWindow(QWidget):
-    """Амбулаторная карта пациента."""
-    def __init__(self):
+    def __init__(self, name: str = "Амбулаторная карта"):
         super().__init__()
+
+        self.name = name
         self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
         mainLayout = QVBoxLayout()
-        self.formGroupBox = QGroupBox("Амбулаторная карта")
+        self.formGroupBox = QGroupBox(self.name)
         self.createForm()
         mainLayout.addWidget(self.formGroupBox)
         self.buttonBox = QDialogButtonBox(
