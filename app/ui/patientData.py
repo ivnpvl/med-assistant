@@ -16,7 +16,7 @@ from app.ui.config import BACKGROUND_WIDGET_COLOR
 
 
 class PatientDataWindow(QWidget):
-    def __init__(self, name: str = "Данные пациента"):
+    def __init__(self, name: str):
         super().__init__()
 
         self.name = name
@@ -70,7 +70,7 @@ class PatientDataWindow(QWidget):
 
 
 class PatientCardWindow(QWidget):
-    def __init__(self, name: str = "Амбулаторная карта"):
+    def __init__(self, name: str):
         super().__init__()
 
         self.name = name

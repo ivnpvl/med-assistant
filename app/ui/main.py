@@ -17,6 +17,7 @@ from app.ui.config import (
     SHEET_SIZE,
     TITLE,
 )
+from app.ui.checkboxes import BASE_STATUS, REACTION_STATUS, MUSCLE_STATUS, REFLEX_STATUS, SKILL_STATUS
 from app.ui.checkedData import CheckboxGridWindow
 from app.ui.patientData import PatientCardWindow, PatientDataWindow
 
@@ -29,17 +30,33 @@ class CentralWindow(QWidget):
         self.selectBar.setFixedWidth(SELECT_BAR_WIDTH)
         self.selectWindow = QStackedWidget()
 
-        self.patientData = PatientDataWindow()
+        self.patientData = PatientDataWindow("Данные пациента")
         self.selectBar.insertItem(0, self.patientData.name)
         self.selectWindow.addWidget(self.patientData)
 
-        self.patientCard = PatientCardWindow()
+        self.patientCard = PatientCardWindow("Амбулаторная карта")
         self.selectBar.insertItem(1, self.patientCard.name)
         self.selectWindow.addWidget(self.patientCard)
 
-        self.baseStatus = CheckboxGridWindow()
+        self.baseStatus = CheckboxGridWindow("Основное", BASE_STATUS)
         self.selectBar.insertItem(2, self.baseStatus.name)
         self.selectWindow.addWidget(self.baseStatus)
+
+        self.reactionStatus = CheckboxGridWindow("Реакции", REACTION_STATUS)
+        self.selectBar.insertItem(3, self.reactionStatus.name)
+        self.selectWindow.addWidget(self.reactionStatus)
+
+        self.muscleStatus = CheckboxGridWindow("Тонус мышц", MUSCLE_STATUS)
+        self.selectBar.insertItem(4, self.muscleStatus.name)
+        self.selectWindow.addWidget(self.muscleStatus)
+
+        self.reflexStatus = CheckboxGridWindow("Рефлексы", REFLEX_STATUS)
+        self.selectBar.insertItem(5, self.reflexStatus.name)
+        self.selectWindow.addWidget(self.reflexStatus)
+
+        self.skillStatus = CheckboxGridWindow("Навыки", SKILL_STATUS)
+        self.selectBar.insertItem(6, self.skillStatus.name)
+        self.selectWindow.addWidget(self.skillStatus)
 
         self.mainLayout = QHBoxLayout()
         self.mainLayout.addWidget(self.selectBar)
