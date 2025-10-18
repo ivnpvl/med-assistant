@@ -1,41 +1,34 @@
-from PyQt6.QtWidgets import (
-    QCheckBox,
-    QDialogButtonBox,
-    QGridLayout,
-    QGroupBox,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QCheckBox, QGridLayout, QWidget
 
-from app.ui.config import BACKGROUND_WIDGET_COLOR, CHECKBOXES_VERTICAL, CHECKBOXES_HORIZONTAL
+from app.ui.config import CHECKBOXES_VERTICAL, CHECKBOXES_HORIZONTAL, WINDOW_STYLE_SHEET
 
 
 class CheckboxGridWindow(QWidget):
     """Информация о пациенте."""
-    def __init__(self, name: str, checkboxes: list[str]):
+    def __init__(self, name: str, checkbox_names: list[str]):
         super().__init__()
 
         self.name = name
-        self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
-        mainLayout = QVBoxLayout()
-        self.formGroupBox = QGroupBox(self.name)
-        self.createForm(checkboxes)
-        mainLayout.addWidget(self.formGroupBox)
-        self.buttonBox = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        mainLayout.addWidget(self.buttonBox)
-        self.setLayout(mainLayout)
+        self.setStyleSheet(WINDOW_STYLE_SHEET)
 
-    def createForm(self, checkboxes: list[str]):
-        gridLayout = QGridLayout()
-        iterator = iter(checkboxes)
+        self.gridCheckboxLayout = QGridLayout()
+        iterator = iter(checkbox_names)
         for h_idx in range(CHECKBOXES_VERTICAL):
             for w_idx in range(CHECKBOXES_HORIZONTAL):
                 try:
-                    checkbox = next(iterator)
-                    gridLayout.addWidget(QCheckBox(checkbox), h_idx, w_idx)
+                    text = next(iterator)
+                    checkbox = QCheckBox(text)
+                    self.gridCheckboxLayout.addWidget(checkbox, h_idx, w_idx)
                 except StopIteration:
                     break
 
-        self.formGroupBox.setLayout(gridLayout)
+        self.setLayout(self.gridCheckboxLayout)
+
+    def extract(self) -> list[str]:
+        data = []
+        for checkbox in self.gridCheckboxLayout.children():
+            checkbox: QCheckBox
+            if checkbox.isChecked():
+                data.append(checkbox.text())
+
+        return data

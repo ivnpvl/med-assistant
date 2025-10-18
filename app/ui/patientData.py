@@ -1,18 +1,15 @@
 from PyQt6.QtGui import QDoubleValidator
 from PyQt6.QtWidgets import (
     QButtonGroup,
-    QDialogButtonBox,
-    QGroupBox,
     QFormLayout,
     QLineEdit,
     QPlainTextEdit,
     QRadioButton,
     QHBoxLayout,
-    QVBoxLayout,
     QWidget,
 )
 
-from app.ui.config import BACKGROUND_WIDGET_COLOR
+from app.ui.config import WINDOW_STYLE_SHEET
 
 
 class PatientDataWindow(QWidget):
@@ -20,18 +17,8 @@ class PatientDataWindow(QWidget):
         super().__init__()
 
         self.name = name
-        self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
-        mainLayout = QVBoxLayout()
-        self.formGroupBox = QGroupBox(self.name)
-        self.createForm()
-        mainLayout.addWidget(self.formGroupBox)
-        self.buttonBox = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        mainLayout.addWidget(self.buttonBox)
-        self.setLayout(mainLayout)
+        self.setStyleSheet(WINDOW_STYLE_SHEET)
 
-    def createForm(self):
         self.formLayout = QFormLayout()
         self.formLayout.setSpacing(10)
 
@@ -66,7 +53,7 @@ class PatientDataWindow(QWidget):
         self.allergyEdit.setPlaceholderText("Наличие аллергических реакций отрицают.")
         self.formLayout.addRow("Аллергические реакции:", self.allergyEdit)
 
-        self.formGroupBox.setLayout(self.formLayout)
+        self.setLayout(self.formLayout)
 
 
 class PatientCardWindow(QWidget):
@@ -74,18 +61,8 @@ class PatientCardWindow(QWidget):
         super().__init__()
 
         self.name = name
-        self.setStyleSheet(f"QLineEdit, QPlainTextEdit {{background-color: {BACKGROUND_WIDGET_COLOR}}}")
-        mainLayout = QVBoxLayout()
-        self.formGroupBox = QGroupBox(self.name)
-        self.createForm()
-        mainLayout.addWidget(self.formGroupBox)
-        self.buttonBox = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        mainLayout.addWidget(self.buttonBox)
-        self.setLayout(mainLayout)
+        self.setStyleSheet(WINDOW_STYLE_SHEET)
 
-    def createForm(self):
         self.formLayout = QFormLayout()
         self.formLayout.setSpacing(10)
 
@@ -113,4 +90,4 @@ class PatientCardWindow(QWidget):
         self.phoneNumberEdit.setPlaceholderText("+7(987)654-32-10")
         self.formLayout.addRow("Телефон:", self.phoneNumberEdit)
 
-        self.formGroupBox.setLayout(self.formLayout)
+        self.setLayout(self.formLayout)

@@ -81,6 +81,11 @@ class MainWindow(QMainWindow):
         self.mainWidget = CentralWindow()
         self.setCentralWidget(self.mainWidget)
 
+    # self.buttonBox = QDialogButtonBox(
+    #     QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+    # )
+    # mainLayout.addWidget(self.buttonBox)
+
 
 def init_ui():
     app = QApplication([])
